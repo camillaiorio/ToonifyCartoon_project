@@ -1,0 +1,4 @@
+/opt/clion-2021.3.3/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/opt/clion-2021.3.3/bin/ninja/linux/ninja -G Ninja /home/biar/project_toonify
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/biar/project_toonify/cmake-build-debug
