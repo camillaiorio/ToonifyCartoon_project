@@ -117,6 +117,19 @@ void test_quantize_color(){
 
 }
 
+void test_recombine(){
+    Image im_edges = load_image("../output/edge_track_iguana.png");
+    Image im_color = load_image("../output/quantize_iguana.png");
+
+    Image merge = recombine(im_edges, im_color);
+    merge.save_png("../output/final_iguana");
+
+    //tentativo con i bordi più spessi -> non va bene
+    Image dil = load_image("../output/dilated_iguana.png");
+    Image merge2 = recombine(dil, im_color);
+    merge2.save_png("../output/dil_final_iguana");
+}
+
 void run_tests_edges() {
 
     test_smooth_image();
@@ -139,6 +152,7 @@ void run_tests_color(){
 int main(int argc, char **argv) {
     run_tests_edges();
     run_tests_color();
+    test_recombine();
     return 0;
 }
 

@@ -44,5 +44,22 @@ Image quantize_colors(const Image& im, int a){ //a= factor to be reduced
     }
     return res;
 }
+//recombine
+Image recombine(const Image& im_edges, const Image& im_color){
+    Image res(im_edges.w,im_edges.h, im_color.c);
 
-//r
+
+    for(int ch=0; ch<im_color.c; ch++){
+        for(int i=0; i<im_edges.h;i++){
+            for(int j=0;j<im_edges.w;j++){
+                if (im_edges(j,i,0)==1){
+                    res(j,i,ch)= 0;
+                }else{
+                    res(j,i,ch) = im_color(j,i,ch);
+                }
+            }
+        }
+    }
+
+    return res;
+}

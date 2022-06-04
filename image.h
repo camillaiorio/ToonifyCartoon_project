@@ -281,3 +281,5 @@ Image operator+(const Image& a, const Image& b);
 Image resizing(Image& im);
 Image median_filter_color(const Image& im,float sigma);
 Image quantize_colors(const Image& im, int a);
+
+Image recombine(const Image& im_edges, const Image& im_color);
