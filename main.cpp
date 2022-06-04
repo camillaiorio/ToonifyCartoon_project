@@ -72,17 +72,47 @@ void test_dilation(){
     dlt.save_png("../output/dilated_iguana");
 
 }
-
-void test_bilateral_filter(){
+void test_resizing_image(){
     Image im = load_image("../data/iguana.jpg");
-    Image blf_im = bilateral_filter_f(im, 1,1);
-    blf_im.save_png("../output/bilateral_iguana");
+    Image im_sz = resizing(im);
+    im_sz.save_png("../output/resize_iguana");
+
+}
+void test_bilateral_app(){
+    Image im = load_image("../data/iguana.jpg");
+    Image im_sz = resizing(im);
+    Image bf;
+    for(int i=0; i<14; i++){
+        bf = bilateral_filter(im_sz, 3, 0.1);
+    }
+    bf.save_png("../output/bilateral_iguana_2");
+}
+void test_median_color(){
+    Image im = load_image("../data/iguana.jpg");
+    Image im_sz = resizing(im);
+    Image bf;
+    for(int i=0; i<14; i++){
+        bf = bilateral_filter(im_sz, 3, 0.1);
+    }
+    Image im_bigger = bilinear_resize(bf, bf.w *4 , bf.h *4);
+    im_bigger.save_png("../output/bigger_iguana");
+    Image mfc= median_filter_color(im_bigger,1);
+    mfc.save_png("../output/median_color_iguana");
+
 }
 
 void test_quantize_color(){
+
     Image im = load_image("../data/iguana.jpg");
-    normalization(im);
-    Image qc_im = quantize_colors(im,24);
+    Image im_sz = resizing(im);
+    Image bf;
+    for(int i=0; i<14; i++){
+        bf = bilateral_filter(im_sz, 3, 0.1);
+    }
+    Image im_bigger = bilinear_resize(bf, bf.w *4 , bf.h *4);
+    Image mfc= median_filter_color(im_bigger,1);
+
+    Image qc_im = quantize_colors(mfc,24);
     qc_im.save_png("../output/quantize_iguana");
 
 }
@@ -100,7 +130,9 @@ void run_tests_edges() {
 }
 
 void run_tests_color(){
-    test_bilateral_filter();
+    test_resizing_image();
+    test_bilateral_app();
+    test_median_color();
     test_quantize_color();
 }
 

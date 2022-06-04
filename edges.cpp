@@ -11,10 +11,9 @@ using namespace std;
 //  per ridurre il salt and pepper noise, si usa un filtro kernel 7x7 (centroid = baricentro)
 //  i pixel RGB al baricentro sono settati per essere la media dei 49 RGB dei pixel vicini.
 Image smooth_image(const Image& im,float sigma){
-    Image new_im = im;
+    Image new_im = rgb_to_grayscale(im);
     Image f = make_gaussian_filter(sigma);
-    Image conv = convolve_image(new_im, f, true);
-
+    Image conv = convolve_image(new_im, f, false);
     return conv;
 }
 // 2) edge detection

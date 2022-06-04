@@ -278,6 +278,6 @@ Image operator-(const Image& a, const Image& b);
 Image operator+(const Image& a, const Image& b);
 
 //color
-Image quantize_colors( const Image& im, float a);
-Image bilateral_filter_f(const Image& im, float sigma1, float sigma2);
-void normalization( Image& im);
+Image resizing(Image& im);
+Image median_filter_color(const Image& im,float sigma);
+Image quantize_colors(const Image& im, int a);

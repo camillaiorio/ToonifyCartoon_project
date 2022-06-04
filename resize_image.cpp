@@ -48,7 +48,7 @@ float Image::pixel_bilinear(float x, float y, int c) const {
 // int w,h: size of new image
 // const Image& im: input image
 // return new Image of size (w,h,im.c)
-Image nearest_resize(const Image &im, int w, int h) {
+Image nearest_resize(const Image &im, int w, int h) { //ridimensionare immagine
     Image ret(w, h, im.c);
 
     for (int i = 0; i < w; ++i) {
