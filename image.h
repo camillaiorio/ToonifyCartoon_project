@@ -267,6 +267,8 @@ Image double_thresholding(const Image& im, float lowThreshold, float highThresho
 Image edge_tracking(const Image& im, float weak, float strong);
 Image dilation( const Image& im);
 
+Image image_segmentation(const Image& im, int k);
+
 // Image manipulation
 Image get_channel(const Image& im, int c);
 bool operator ==(const Image& a, const Image& b);
