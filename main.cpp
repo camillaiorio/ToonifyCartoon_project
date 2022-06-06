@@ -137,7 +137,9 @@ void test_clusters(){
 }
 
 void test_prova(){
-    Image im= load_image("../data/iguana.jpg");
+    //median filter + quantize
+    //Image im= load_image("../data/iguana.jpg");
+    Image im= load_image("../data/big_dog.jpg");
     Image im_sz = resizing(im);
     Image bf;
     for(int i=0; i<14; i++){
@@ -146,10 +148,9 @@ void test_prova(){
     Image im_bigger = bilinear_resize(bf, bf.w *4 , bf.h *4);
     Image mfc= median_filter_color(im_bigger,1);
 
-    Image qc_im = quantize_colors(mfc,24);
-    //fino a qui quantize color (RGB)
-    qc_im.save_png("../output/iguana_temporanea");
+    Image qc_im = quantize_colors(mfc,24); //immagine quantizzata == quantize_iguana
 
+    //canny edge detector
     pair<Image,Image> grad = compute_gradient(qc_im, 1);
     Image mag = grad.first;
     Image dir = grad.second;
@@ -159,15 +160,36 @@ void test_prova(){
     Image dt = double_thresholding(nms, 0.03, 0.17, strong, weak);
     Image edge_track = edge_tracking(dt, weak, strong);
 
-    edge_track.save_png("../output/quantize_bw_iguana");
-
-
-    Image im_edges = load_image("../output/quantize_bw_iguana.png");
+    //edge_track.save_png("../output/quantize_bw_iguana"); //edges desiderato
+    edge_track.save_png("../output/quantize_bw_big_dog");
+    /*
+    Image im_qedges = load_image("../output/quantize_bw_iguana.png");
     Image im_color = load_image("../output/quantize_iguana.png");
-    Image im_final = load_image("../output/edge_track_iguana");
-    Image merge = recombine(im_final, im_color);
-    Image merge2 = recombine2(im_edges,merge);
-    merge.save_png("../output/final_iguana_2");
+    Image im_det_edges = load_image("../output/edge_track_iguana.png");
+    */
+    Image im_qedges= load_image("../output/quantize_bw_big_dog.png");
+    Image im_color = load_image("../output/quantize_big_dog.png");
+    Image im_det_edges = load_image("../output/edge_track_big_dog.png");
+
+    Image dlt = dilation(im_qedges);
+    dlt.save_png("../output/dilated_big_dog_2");
+
+    Image merge = recombine(im_qedges, im_color); //inverto gli edges
+
+    //merge.save_png("../output/final_iguana_2");
+    merge.save_png("../output/final_big_dog_2");
+
+    Image details = recombine2(im_det_edges,merge); //inverto gli edges
+
+    //details.save_png("../output/final_det_iguana_2");
+    details.save_png("../output/final_det_big_dog_2");
+
+    //con i bordi più spessi
+
+    Image merge_dil = recombine(dlt, im_color);
+    merge_dil.save_png("../output/final_dil_big_dog_2");
+    Image details_dil = recombine2(im_det_edges,merge);
+    details_dil.save_png("../output/final_dil_det_big_dog_2");
 
     //tentativo con i bordi più spessi -> non va bene
     /*
