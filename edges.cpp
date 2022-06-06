@@ -58,7 +58,7 @@ Image image_segmentation(const Image& im, int k){
         for (int i = 0; i < im.h; i++) {
             for (int j = 0; j < im.w; j++) {
                 int best_cluster = 0;
-                float best_difference = im.pixel(j, i, 0) - array[0];
+                float best_difference = im.pixel(j, i, 0)- array[0];
                 for (int u = 1; u < k; u++) {
                     float current_difference = im.pixel(j, i, 0) - array[u];
                     if (current_difference < best_difference) {

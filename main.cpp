@@ -136,6 +136,48 @@ void test_clusters(){
     im_c.save_png("../output/cluster_iguana");
 }
 
+void test_prova(){
+    Image im= load_image("../data/iguana.jpg");
+    Image im_sz = resizing(im);
+    Image bf;
+    for(int i=0; i<14; i++){
+        bf = bilateral_filter(im_sz, 3, 0.1);
+    }
+    Image im_bigger = bilinear_resize(bf, bf.w *4 , bf.h *4);
+    Image mfc= median_filter_color(im_bigger,1);
+
+    Image qc_im = quantize_colors(mfc,24);
+    //fino a qui quantize color (RGB)
+    qc_im.save_png("../output/iguana_temporanea");
+
+    pair<Image,Image> grad = compute_gradient(qc_im, 1);
+    Image mag = grad.first;
+    Image dir = grad.second;
+    Image nms = non_maximum_supp(mag, dir);
+    float strong = 1.0;
+    float weak = 0.2;
+    Image dt = double_thresholding(nms, 0.03, 0.17, strong, weak);
+    Image edge_track = edge_tracking(dt, weak, strong);
+
+    edge_track.save_png("../output/quantize_bw_iguana");
+
+
+    Image im_edges = load_image("../output/quantize_bw_iguana.png");
+    Image im_color = load_image("../output/quantize_iguana.png");
+    Image im_final = load_image("../output/edge_track_iguana");
+    Image merge = recombine(im_final, im_color);
+    Image merge2 = recombine2(im_edges,merge);
+    merge.save_png("../output/final_iguana_2");
+
+    //tentativo con i bordi più spessi -> non va bene
+    /*
+    Image dil = load_image("../output/dilated_big_dog.png");
+    Image merge2 = recombine(dil, im_color);
+    merge2.save_png("../output/dil_final_big_dog");*/
+
+
+}
+
 
 void run_tests_edges() {
 
@@ -158,7 +200,10 @@ void run_tests_color(){
 }
 
 int main(int argc, char **argv) {
-    test_clusters();
+    //test_clusters();
+
+    test_prova();
+
     //run_tests_edges();
     //run_tests_color();
     //test_recombine();

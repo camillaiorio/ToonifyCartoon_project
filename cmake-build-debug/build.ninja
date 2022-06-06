@@ -120,6 +120,12 @@ build CMakeFiles/project_toonify.dir/colors.cpp.o: CXX_COMPILER__project_toonify
   OBJECT_DIR = CMakeFiles/project_toonify.dir
   OBJECT_FILE_DIR = CMakeFiles/project_toonify.dir
 
+build CMakeFiles/project_toonify.dir/prova.cpp.o: CXX_COMPILER__project_toonify_Debug /home/biar/project_toonify/prova.cpp || cmake_object_order_depends_target_project_toonify
+  DEP_FILE = CMakeFiles/project_toonify.dir/prova.cpp.o.d
+  FLAGS = -g -std=gnu++14
+  OBJECT_DIR = CMakeFiles/project_toonify.dir
+  OBJECT_FILE_DIR = CMakeFiles/project_toonify.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target project_toonify
@@ -128,7 +134,7 @@ build CMakeFiles/project_toonify.dir/colors.cpp.o: CXX_COMPILER__project_toonify
 #############################################
 # Link the executable project_toonify
 
-build project_toonify: CXX_EXECUTABLE_LINKER__project_toonify_Debug CMakeFiles/project_toonify.dir/main.cpp.o CMakeFiles/project_toonify.dir/load_image.cpp.o CMakeFiles/project_toonify.dir/utils.cpp.o CMakeFiles/project_toonify.dir/process_image.cpp.o CMakeFiles/project_toonify.dir/resize_image.cpp.o CMakeFiles/project_toonify.dir/filter_image.cpp.o CMakeFiles/project_toonify.dir/edges.cpp.o CMakeFiles/project_toonify.dir/colors.cpp.o
+build project_toonify: CXX_EXECUTABLE_LINKER__project_toonify_Debug CMakeFiles/project_toonify.dir/main.cpp.o CMakeFiles/project_toonify.dir/load_image.cpp.o CMakeFiles/project_toonify.dir/utils.cpp.o CMakeFiles/project_toonify.dir/process_image.cpp.o CMakeFiles/project_toonify.dir/resize_image.cpp.o CMakeFiles/project_toonify.dir/filter_image.cpp.o CMakeFiles/project_toonify.dir/edges.cpp.o CMakeFiles/project_toonify.dir/colors.cpp.o CMakeFiles/project_toonify.dir/prova.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/project_toonify.dir
   POST_BUILD = :
