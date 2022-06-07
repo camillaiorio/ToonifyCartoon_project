@@ -1,0 +1,3 @@
+/home/biar/Desktop/commit/build/CMakeFiles/project_toonify.dir
+/home/biar/Desktop/commit/build/CMakeFiles/edit_cache.dir
+/home/biar/Desktop/commit/build/CMakeFiles/rebuild_cache.dir

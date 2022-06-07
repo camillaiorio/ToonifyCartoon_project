@@ -72,7 +72,7 @@ Image recombine2(const Image& im_edges, const Image& im_color){
     for(int ch=0; ch<im_color.c; ch++){
         for(int i=0; i<im_edges.h;i++){
             for(int j=0;j<im_edges.w;j++){
-                if (im_edges(j,i,0)==1){
+                if (im_edges(j,i,0)==1 and im_color(j,i,0)!=0){
                     res(j,i,ch)= im_color(j,i,ch) - 0.15;
                 }else{
                     res(j,i,ch) = im_color(j,i,ch) ;

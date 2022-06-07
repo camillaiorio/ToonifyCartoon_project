@@ -7,6 +7,7 @@
 
 #define M_PI 3.14159265358979323846
 using namespace std;
+
 // 1) median filter
 //  per ridurre il salt and pepper noise, si usa un filtro kernel 7x7 (centroid = baricentro)
 //  i pixel RGB al baricentro sono settati per essere la media dei 49 RGB dei pixel vicini.
@@ -158,5 +159,4 @@ Image dilation( const Image& im){
     return res;
 
 }
-// 4) edge filter
 
