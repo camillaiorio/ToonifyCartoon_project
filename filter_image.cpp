@@ -136,68 +136,7 @@ Image convolve_image(const Image& im, const Image& filter, bool preserve)
     return conv;
 }
 
-// HW1 #2.3
-// returns basic 3x3 high-pass filter
-Image make_highpass_filter()
-{
-    // TODO: Implement the filter
 
-    Image f (3,3,1);
-
-    f(0,0,0) = 0;
-    f(1,0,0) = -1;
-    f(2,0,0) = 0;
-    f(0,1,0) = -1;
-    f(1,1,0) = 4;
-    f(2,1,0) = -1;
-    f(0,2,0) = 0;
-    f(1,2,0) = -1;
-    f(2,2,0) = 0;
-
-    return f;
-}
-
-// HW1 #2.3
-// returns basic 3x3 sharpen filter
-Image make_sharpen_filter()
-{
-    // TODO: Implement the filter
-
-    Image f (3,3,1);
-
-    f(0,0,0) = 0;
-    f(1,0,0) = -1;
-    f(2,0,0) = 0;
-    f(0,1,0) = -1;
-    f(1,1,0) = 5;
-    f(2,1,0) = -1;
-    f(0,2,0) = 0;
-    f(1,2,0) = -1;
-    f(2,2,0) = 0;
-
-    return f;
-}
-
-// HW1 #2.3
-// returns basic 3x3 emboss filter
-Image make_emboss_filter()
-{
-    // TODO: Implement the filter
-
-    Image f (3,3,1);
-
-    f(0,0,0) = -2;
-    f(1,0,0) = -1;
-    f(2,0,0) = 0;
-    f(0,1,0) = -1;
-    f(1,1,0) = 1;
-    f(2,1,0) = 1;
-    f(0,2,0) = 0;
-    f(1,2,0) = 1;
-    f(2,2,0) = 2;
-
-    return f;
-}
 
 // HW1 #2.4
 // float sigma: sigma for the gaussian filter
@@ -393,46 +332,6 @@ pair<Image,Image> sobel_image(const Image& im)
     return {G,T};
 }
 
-
-// HW1 #4.4
-// const Image& im: input image
-// returns the colorized Sobel image of the same size
-Image colorize_sobel(const Image& im)
-{
-
-    Image f = make_gaussian_filter(4);
-    Image blur = convolve_image(im, f, true);
-    blur.clamp();
-
-    pair<Image, Image> sobel = sobel_image(blur);
-
-    Image mag = sobel.first;
-    Image theta = sobel.second;
-
-
-    feature_normalize(mag);
-
-    for (int y = 0; y < im.h; y ++) {
-        for (int x = 0; x < im.w; x ++) {
-            theta(x,y,0) = theta(x,y,0) / (2 * M_PI) + 0.5;
-        }
-    }
-
-
-    Image hsv (im.w, im.h, 3);
-
-    for (int y = 0; y < im.h; y ++) {
-        for (int x = 0; x < im.w; x ++) {
-            hsv(x,y,0) = theta(x,y,0);
-            hsv(x,y,1) = mag(x,y,0);
-            hsv(x,y,2) = mag(x,y,0);
-        }
-    }
-
-    hsv_to_rgb(hsv);
-
-    return hsv;
-}
 
 
 

@@ -1,63 +1,14 @@
 #include "image.h"
 #include "utils.h"
-
-#include <string>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#define IMAGE_PIXEL_LIMIT   700000
 
 using namespace std;
 
-//***************************************
-//                 edges
-// **************************************
-void test_smooth_image() {
-
-    Image im = load_image("../data/big_dog.jpg");
-    //Image im = load_image("../data/iguana.jpg");
-
-    Image smooth = smooth_image(im, 1); //7x7
-    smooth.save_png("../output/smooth_big_dog");
-    //smooth.save_png("../output/smooth_iguana");
-
-}
-
-
-void test_gradient() {
-
-    Image im = load_image("../data/big_dog.jpg");
-    //Image im = load_image("../data/iguana.jpg");
-    pair<Image,Image> grad = compute_gradient(im, 1);
-    Image mag = grad.first;
-    Image dir = grad.second;
-    mag.save_png("../output/dx_big_dog");
-    //mag.save_png("../output/dx_iguana");
-}
-
-void test_non_max_supp() {
-
-    Image im = load_image("../data/big_dog.jpg");
-    //Image im = load_image("../data/iguana.jpg");
-    pair<Image,Image> grad = compute_gradient(im, 1);
-    Image mag = grad.first;
-    Image dir = grad.second;
-    Image nms = non_maximum_supp(mag, dir);
-    nms.save_png("../output/nms_big_dog");
-    //nms.save_png("../output/nms_iguana");
-}
-
-void test_double_thresholding() {
-    Image im = load_image("../data/big_dog.jpg");
-    //Image im = load_image("../data/iguana.jpg");
-    pair<Image,Image> grad = compute_gradient(im, 1);
-    Image mag = grad.first;
-    Image dir = grad.second;
-    Image nms = non_maximum_supp(mag, dir);
-    Image dt = double_thresholding(nms, 0.03, 0.17, 1.0, 0.2);
-    dt.save_png("../output/double_threshold_big_dog");
-    //dt.save_png("../output/double_threshold_iguana");
-}
-
-void test_edge_tracking() {
-    Image im = load_image("../data/big_dog.jpg");
-    //Image im = load_image("../data/iguana.jpg");
+Image prima_versione(Image& im){
+    //edges
     pair<Image,Image> grad = compute_gradient(im, 1);
     Image mag = grad.first;
     Image dir = grad.second;
@@ -65,69 +16,26 @@ void test_edge_tracking() {
     float strong = 1.0;
     float weak = 0.2;
     Image dt = double_thresholding(nms, 0.03, 0.17, strong, weak);
-    Image edge_track = edge_tracking(dt, weak, strong);
-    edge_track.save_png("../output/edge_track_big_dog");
-    //edge_track.save_png("../output/edge_track_iguana");
-}
-void test_dilation(){
-    Image im = load_image("../data/big_dog.jpg");
-    //Image im = load_image("../data/iguana.jpg");
-    pair<Image,Image> grad = compute_gradient(im, 1);
-    Image mag = grad.first;
-    Image dir = grad.second;
-    Image nms = non_maximum_supp(mag, dir);
-    float strong = 1.0;
-    float weak = 0.2;
-    Image dt = double_thresholding(nms, 0.03, 0.17, strong, weak);
-    Image edge_track = edge_tracking(dt, weak, strong);
-    Image dlt = dilation(edge_track);
-    dlt.save_png("../output/dilated_big_dog");
-    //dlt.save_png("../output/dilated_iguana");
+    Image edge_track = edge_tracking(dt, weak, strong); //edge_track è  il bordo dell'immagine
 
-}
-
-//***************************************
-//                 colors
-// **************************************
-void test_resizing_image(){
-    Image im = load_image("../data/big_dog.jpg");
-    //Image im = load_image("../data/iguana.jpg");
-    Image im_sz = resizing(im);
-    im_sz.save_png("../output/resize_big_dog");
-    //im_sz.save_png("../output/resize_iguana");
-}
-void test_bilateral_app(){
-    Image im = load_image("../data/big_dog.jpg");
-    //Image im = load_image("../data/iguana.jpg");
-    Image im_sz = resizing(im);
-    Image bf;
-    for(int i=0; i<14; i++){
-        bf = bilateral_filter(im_sz, 3, 0.1);
-    }
-    bf.save_png("../output/bilateral_big_dog_2");
-    //bf.save_png("../output/bilateral_iguana_2");
-}
-void test_median_color(){
-    Image im = load_image("../data/big_dog.jpg");
-    //Image im = load_image("../data/iguana.jpg");
+    //colors
     Image im_sz = resizing(im);
     Image bf;
     for(int i=0; i<14; i++){
         bf = bilateral_filter(im_sz, 3, 0.1);
     }
     Image im_bigger = bilinear_resize(bf, bf.w *4 , bf.h *4);
-    im_bigger.save_png("../output/bigger_big_dog");
-    //im_bigger.save_png("../output/bigger_iguana");
     Image mfc= median_filter_color(im_bigger,1);
-    mfc.save_png("../output/median_color_big_dog");
-    //mfc.save_png("../output/median_color_iguana");
+    Image qc_im = quantize_colors(mfc,24); //immagine quantizzata a colori
 
+    //recombine
+    Image merge = recombine(edge_track, qc_im);
+    return merge;
 }
 
-void test_quantize_color(){
+Image seconda_versione(Image& im){
 
-    Image im = load_image("../data/big_dog.jpg");
-    //Image im = load_image("../data/iguana.jpg");
+    //creo un'immagine quantizzata
     Image im_sz = resizing(im);
     Image bf;
     for(int i=0; i<14; i++){
@@ -137,44 +45,8 @@ void test_quantize_color(){
     Image mfc= median_filter_color(im_bigger,1);
 
     Image qc_im = quantize_colors(mfc,24);
-    qc_im.save_png("../output/quantize_big_dog");
-    //qc_im.save_png("../output/quantize_iguana");
 
-}
-
-void test_recombine(){
-    Image im_edges = load_image("../output/edge_track_big_dog.png");
-    Image im_color = load_image("../output/quantize_big_dog.png");
-    //Image im_edges = load_image("../output/edge_track_iguana.png");
-    //Image im_color = load_image("../output/quantize_iguana.png");
-    Image merge = recombine(im_edges, im_color);
-    merge.save_png("../output/final_big_dog");
-    //merge.save_png("../output/final_iguana");
-
-    //tentativo con i bordi più spessi -> non va bene per iguana per big_dog si
-    Image dil = load_image("../output/dilated_big_dog.png");
-    //Image dil = load_image("../output/dilated_iguana.png");
-    Image merge2 = recombine(dil, im_color);
-    merge2.save_png("../output/dil_final_big_dog");
-    //merge2.save_png("../output/dil_final_iguana");
-}
-
-
-void test_prova(){
-    //median filter + quantize
-    //Image im= load_image("../data/iguana.jpg");
-    Image im= load_image("../data/big_dog.jpg");
-    Image im_sz = resizing(im);
-    Image bf;
-    for(int i=0; i<14; i++){
-        bf = bilateral_filter(im_sz, 3, 0.1);
-    }
-    Image im_bigger = bilinear_resize(bf, bf.w *4 , bf.h *4);
-    Image mfc= median_filter_color(im_bigger,1);
-
-    Image qc_im = quantize_colors(mfc,24); //immagine quantizzata == quantize_iguana
-
-    //canny edge detector
+    // edge
     pair<Image,Image> grad = compute_gradient(qc_im, 1);
     Image mag = grad.first;
     Image dir = grad.second;
@@ -184,66 +56,66 @@ void test_prova(){
     Image dt = double_thresholding(nms, 0.03, 0.17, strong, weak);
     Image edge_track = edge_tracking(dt, weak, strong);
 
-    //edge_track.save_png("../output/quantize_bw_iguana"); //edges desiderato
-    edge_track.save_png("../output/quantize_bw_big_dog");
-    /*
-    Image im_qedges = load_image("../output/quantize_bw_iguana.png");
-    Image im_color = load_image("../output/quantize_iguana.png");
-    Image im_det_edges = load_image("../output/edge_track_iguana.png");
-    */
-    Image im_qedges= load_image("../output/quantize_bw_big_dog.png");
-    Image im_color = load_image("../output/quantize_big_dog.png");
-    Image im_det_edges = load_image("../output/edge_track_big_dog.png");
+    Image dlt = dilation(edge_track); //bordi spessi
 
-    Image dlt = dilation(im_qedges);
-    dlt.save_png("../output/dilated_big_dog_2");
-    //dlt.save_png("../output/dilated_iguana_2");
+    //color
+    Image image_sz = resizing(im);
+    Image bf_2;
+    for(int i=0; i<14; i++){
+        bf_2 = bilateral_filter(image_sz, 3, 0.1);
+    }
+    Image im_bigger_2 = bilinear_resize(bf_2, bf_2.w *4 , bf_2.h *4);
+    Image mfc_2= median_filter_color(im_bigger_2,1);
+    Image qc_im_2 = quantize_colors(mfc_2,24); //immagine quantizzata a colori
 
-    Image merge = recombine(im_qedges, im_color); //inverto gli edges
-
-    //merge.save_png("../output/final_iguana_2");
-    merge.save_png("../output/final_big_dog_2");
-
-
-    //con i bordi più spessi
-
-    Image merge_dil = recombine(dlt, im_color);
-    merge_dil.save_png("../output/final_dil_big_dog_2");
-
-
-
-
+    //recombine
+    Image merge_dil = recombine(dlt, qc_im_2);
+    return merge_dil;
 }
 
 
-void run_tests_edges() {
+int main() {
+    cout << "Programma di cartoonificazione immagini \n" ;
+    cout << "di Camilla Iorio\nV 1.0\n" ;
+    cout << "Inserire URL immagine da elaborare:" ;
+    time_t t0,t1;
+    char url[200];
 
-    test_smooth_image();
-    test_gradient();
-    test_non_max_supp();
-    test_double_thresholding();
-    test_edge_tracking();
-    test_dilation();
+    t0 = time(NULL);
+    cin >> url;
+    Image start_image = load_image(url);
+    char *dot = strrchr( url, '.');
+    if(dot != NULL && dot != url)
+        *dot = '\0';
 
-    printf("%d tests, %d passed, %d failed\n", tests_total, tests_total - tests_fail, tests_fail);
-}
 
-void run_tests_color(){
-    test_resizing_image();
-    test_bilateral_app();
-    test_median_color();
-    test_quantize_color();
-}
+    int h=start_image.h;
+    int w=start_image.w;
+    cout << "L'immagine ha dimensione (h x w) " << h << " x "<< w << "\n";
 
-int main(int argc, char **argv) {
+    Image final_image;
 
-    //versione fedele alla specifica
-    run_tests_edges();
-    run_tests_color();
-    test_recombine();
+    if(h*w>= IMAGE_PIXEL_LIMIT){
+        cout << "L'immagine è superiore a " << IMAGE_PIXEL_LIMIT << " pixel\n";
 
-    //seconda versione
-    test_prova();
+        cout << "Elaborazione in corso. Attendere...\n ";
+        final_image = seconda_versione(start_image);
+
+    }else{
+        cout << "L'immagine è inferiore a " << IMAGE_PIXEL_LIMIT << " pixel\n";
+
+        cout << "Elaborazione in corso. Attendere...\n ";
+        final_image = prima_versione(start_image);
+    }
+
+
+    char url_out[200];
+    strcpy(url_out, url);
+    strcat(url_out, "_cartoonized");
+    final_image.save_png(url_out);
+    cout << "l'immagine elaborata è stata salvata come " << url_out;
+    t1 = time(NULL);
+    cout << "Tempo impiegato: "<<(t1-t0) <<" secondi.\n";
 
     return 0;
 }
