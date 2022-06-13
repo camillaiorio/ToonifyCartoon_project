@@ -98,13 +98,13 @@ int main() {
     if(h*w>= IMAGE_PIXEL_LIMIT){
         cout << "L'immagine è superiore a " << IMAGE_PIXEL_LIMIT << " pixel\n";
 
-        cout << "Elaborazione in corso. Attendere...\n ";
+        cout << "Elaborazione in corso. Attendere...\n";
         final_image = seconda_versione(start_image);
 
     }else{
         cout << "L'immagine è inferiore a " << IMAGE_PIXEL_LIMIT << " pixel\n";
 
-        cout << "Elaborazione in corso. Attendere...\n ";
+        cout << "Elaborazione in corso. Attendere...\n";
         final_image = prima_versione(start_image);
     }
 
@@ -113,7 +113,7 @@ int main() {
     strcpy(url_out, url);
     strcat(url_out, "_cartoonized");
     final_image.save_png(url_out);
-    cout << "l'immagine elaborata è stata salvata come " << url_out;
+    cout << "L'immagine elaborata è stata salvata come " << url_out<<"\n";
     t1 = time(NULL);
     cout << "Tempo impiegato: "<<(t1-t0) <<" secondi.\n";
 
